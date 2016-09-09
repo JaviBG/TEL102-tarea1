@@ -6,9 +6,15 @@ using namespace std;
  
 #include <iomanip>
  
+struct output{
+	double* p;
+	double* l;
+	int n;
+} salida;
+
 void monomio2(int n, double *x, double *D);
  
-double* lagrange_interpolation () {
+output lagrange_interpolation () {
  
     ifstream label1 ("datos//datos.in");
      
@@ -61,8 +67,12 @@ double* lagrange_interpolation () {
         }
       
     }
-    
-    return P;
+
+    salida.p = P;
+    salida.l = L;
+    salida.n = n;
+
+    return salida;
  
 }
  
@@ -98,9 +108,9 @@ void monomio2(int n, double *x, double *D){
 }
 
 PyObject *wrap_lagrange_interpolation(PyObject *self, PyObject *args){
-    double* result;
+    output result;
     result = lagrange_interpolation();
-    return Py_BuildValue("d", result);
+    return Py_BuildValue("(ddd)",result.p[0],result.p[1],result.p[2]);
 }
 
 //Estructura que asocia nombre de funciones en Python
