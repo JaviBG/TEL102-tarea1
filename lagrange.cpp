@@ -108,25 +108,39 @@ void monomio2(int n, double *x, double *D){
 }
 
 PyObject *wrap_lagrange_interpolation(PyObject *self, PyObject *args){
-    output result;
-    result = lagrange_interpolation();
-    if (result.n == 1) {
-    	return Py_BuildValue("(d)",result.p[0]);	
+    output data;
+    data = lagrange_interpolation();
+    if (data.n == 1) {
+    	return Py_BuildValue("(d)",data.p[0]);	
     }
-    else if (result.n == 2){
-    	return Py_BuildValue("(dd)",result.p[0],result.p[1]);
+    else if (data.n == 2){
+    	return Py_BuildValue("(dd)",data.p[0],data.p[1]);
     }
-    else if (result.n == 3){
-    	return Py_BuildValue("(ddd)",result.p[0],result.p[1],result.p[2]);
+    else if (data.n == 3){
+    	return Py_BuildValue("(ddd)",data.p[0],data.p[1],data.p[2]);
     }
-    else if (result.n == 4){
-    	return Py_BuildValue("(dddd)",result.p[0],result.p[1],result.p[2],result.p[3]);
+    else if (data.n == 4){
+    	return Py_BuildValue("(dddd)",data.p[0],data.p[1],data.p[2],data.p[3]);
     }
-    else if (result.n == 5){
-    	return Py_BuildValue("(ddddd)",result.p[0],result.p[1],result.p[2],result.p[3],result.p[4]);
+    else {
+    	return NULL;
     }
-    else if (result.n == 6){
-    	return Py_BuildValue("(dddddd)",result.p[0],result.p[1],result.p[2],result.p[3],result.p[4],result.p[5]);
+}
+
+PyObject *wrap_lagrange_interpolation_L(PyObject *self, PyObject *args){
+    output data;
+    data = lagrange_interpolation();
+    if (data.n == 1) {
+    	return Py_BuildValue("(d)",data.l[0]);	
+    }
+    else if (data.n == 2){
+    	return Py_BuildValue("(dd)",data.l[0],data.l[1]);
+    }
+    else if (data.n == 3){
+    	return Py_BuildValue("(ddd)",data.l[0],data.l[1],data.l[2]);
+    }
+    else if (data.n == 4){
+    	return Py_BuildValue("(dddd)",data.p[0],data.l[1],data.l[2],data.l[3]);
     }
     else {
     	return NULL;
@@ -138,25 +152,37 @@ PyObject *wrap_point_interpolate(PyObject *self, PyObject *args){
     output data = lagrange_interpolation();
 	if (!PyArg_ParseTuple(args, "i", &x))
 		return NULL;
-	return Py_BuildValue("d", data.p[x]);
+
+	if (data.n == 1) {
+    	return Py_BuildValue("d",data.p[0]);	
+    }
+    else if (data.n == 2){
+    	return Py_BuildValue("d",x*data.p[0]+data.p[1]);
+    }
+    else if (data.n == 3){
+    	return Py_BuildValue("d",x*x*data.p[0]+x*data.p[1]+data.p[2]);
+    }
+    else if (data.n == 4){
+    	return Py_BuildValue("d",x*x*x*data.p[0]+x*x*data.p[1]+x*data.p[2]+data.p[3]);
+    }
+    else {
+    	return NULL;
+    }
 }
 
-//Estructura que asocia nombre de funciones en Python
-//con su respectivo wrapper.
-//Ejemplo, en Python ejecuto "fact" y se ejecutara 'wrap_fact'
 static PyMethodDef lagrangeMethods[] = {
     {"lagrange_interpolation", wrap_lagrange_interpolation, METH_VARARGS, "Execute a shell command."},
+    {"lagrange_interpolation_L", wrap_lagrange_interpolation_L, METH_VARARGS, "Execute a shell command."},
     {"point_interpolate", wrap_point_interpolate, METH_VARARGS, "Execute a shell command."},
-    { NULL, NULL}
+    {NULL, NULL}
 };
 
 static struct PyModuleDef lagrangeModule = {
    PyModuleDef_HEAD_INIT,
-   "lagrange",   /* name of module */
-   NULL, /* module documentation, may be NULL */
-   -1,       /* size of per-interpreter state of the module,
-                or -1 if the module keeps state in global variables. */
-   lagrangeMethods //Connects to methods
+   "lagrange",
+   NULL,
+   -1,
+   lagrangeMethods
 };
 
 PyMODINIT_FUNC
