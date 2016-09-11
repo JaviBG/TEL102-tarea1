@@ -110,7 +110,35 @@ void monomio2(int n, double *x, double *D){
 PyObject *wrap_lagrange_interpolation(PyObject *self, PyObject *args){
     output result;
     result = lagrange_interpolation();
-    return Py_BuildValue("(ddd)",result.p[0],result.p[1],result.p[2]);
+    if (result.n == 1) {
+    	return Py_BuildValue("(d)",result.p[0]);	
+    }
+    else if (result.n == 2){
+    	return Py_BuildValue("(dd)",result.p[0],result.p[1]);
+    }
+    else if (result.n == 3){
+    	return Py_BuildValue("(ddd)",result.p[0],result.p[1],result.p[2]);
+    }
+    else if (result.n == 4){
+    	return Py_BuildValue("(dddd)",result.p[0],result.p[1],result.p[2],result.p[3]);
+    }
+    else if (result.n == 5){
+    	return Py_BuildValue("(ddddd)",result.p[0],result.p[1],result.p[2],result.p[3],result.p[4]);
+    }
+    else if (result.n == 6){
+    	return Py_BuildValue("(dddddd)",result.p[0],result.p[1],result.p[2],result.p[3],result.p[4],result.p[5]);
+    }
+    else {
+    	return NULL;
+    }
+}
+
+PyObject *wrap_point_interpolate(PyObject *self, PyObject *args){
+    int x;
+    output data = lagrange_interpolation();
+	if (!PyArg_ParseTuple(args, "i", &x))
+		return NULL;
+	return Py_BuildValue("d", data.p[x]);
 }
 
 //Estructura que asocia nombre de funciones en Python
@@ -118,6 +146,7 @@ PyObject *wrap_lagrange_interpolation(PyObject *self, PyObject *args){
 //Ejemplo, en Python ejecuto "fact" y se ejecutara 'wrap_fact'
 static PyMethodDef lagrangeMethods[] = {
     {"lagrange_interpolation", wrap_lagrange_interpolation, METH_VARARGS, "Execute a shell command."},
+    {"point_interpolate", wrap_point_interpolate, METH_VARARGS, "Execute a shell command."},
     { NULL, NULL}
 };
 

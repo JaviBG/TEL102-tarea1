@@ -1,0 +1,20 @@
+//Comando para compilación de wrapper en Linux - Testeado en Ubuntu 14.04
+//Verificar rutas a archivos segun version de Python disponible.
+
+g++ -fpic -c -I/usr/include/python3.4 -I /usr/lib/python3.4/config-3.4m-x86_64-linux-gnu funcion.cpp
+
+//Fase de linking para generacion de biblioteca (shared object).
+//El nombre del archivo.so debe coincidir con el nombre del modulo 
+//especificado en funcion.cpp
+
+g++ -shared funcion.o -o example.so
+
+//Comando para ejecutar el programa (integracion tambien con matplotlib).
+//Verificar que matplotlib tambien este instalado y que version instalada
+//de Python >= 3.
+//(sino: sudo apt-get install python3-matplotlib)
+//Corrija el comando de acuerdo a version usada para compilar el wrapper.
+
+python3.4 wrapper.py
+
+ 
