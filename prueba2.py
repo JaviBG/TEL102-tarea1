@@ -3,13 +3,10 @@ from tkinter import*
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
-
+from lagrange import *
 import tkinter.messagebox
 import matplotlib.pyplot as plt
 import numpy as np
-
-from lagrange import *
-
 import shutil, os
 
 #Creando ventana
@@ -47,46 +44,46 @@ def graficar():
 def load_file():
     filename = askopenfilename()
     #filetypes=(("Datos", "*.in"), ("All files", "*.*"))
-    if filename:
-        try:
-            ruta = os.getcwd() + os.sep
-            origen = filename
-            destino = ruta + 'datos/datos.in'
-            try:
-                shutil.copyfile(origen, destino)
-                print("Archivo copiado")
-            except:
-                print("Se ha producido un error")
-            tupla = lagrange_interpolation()
-            lista = list(tupla)
-            numeros = lista[::-1]
-            texto = ""
-            for i in numeros:
-              if numeros.index(i) != 0:
-                texto += " + " + str(i) + "*(x^" + str(numeros.index(i)) + ")"
-              else:
-                texto += str(i)
-            tkinter.messagebox.showinfo("Resulado", texto)
-        except:                     # <- naked except is a bad idea
-              showerror("Open Source File", "No se puede leer archivo\n'%s'" % filename)
-        return
- 
+    try:
+        ruta = os.getcwd() + os.sep
+        origen = filename
+        destino = ruta + 'datos/datos.in'
+        print (origen)
+        print (destino)
+        shutil.copyfile(origen, destino)
+        tupla = lagrange_interpolation()
+        lista = list(tupla)
+        l = len(lista)
+        numeros = lista[::-1]
+        texto = ""  
+        for i in range((l-1),-1,-1):
+            if (i != 0) and (numeros[i-1] >= 0):
+                texto += str(abs(numeros[i])) + "*(x^" + str(i) + ") + "
+            elif (i != 0) and (numeros[i-1] < 0):
+                texto += str(abs(numeros[i])) + "*(x^" + str(i) + ") - "
+            else:
+                texto += str(abs(numeros[i]))
+        tkinter.messagebox.showinfo("Resulado", texto)
+    except:                     # <- naked except is a bad idea
+        showerror("Open Source File", "No se puede leer archivo\n'%s'" % filename)
              
 #Maquetado interfaz
 aA = Entry(ventana, textvariable = a)
-aA.place(bordermode = OUTSIDE, height = 30, width = 50, x = 10, y = 290)
 bB = Entry (ventana, textvariable = b)
-bB.place(bordermode = OUTSIDE, height = 30, width = 50, x = 130, y = 290)
 cC = Entry(ventana, textvariable = c)
-cC.place(bordermode = OUTSIDE, height = 30, width = 50, x = 230, y = 290)
+
+aA.place(bordermode = OUTSIDE, height = 30, width = 50, x = 230, y = 290)
+bB.place(bordermode = OUTSIDE, height = 30, width = 50, x = 130, y = 290)
+cC.place(bordermode = OUTSIDE, height = 30, width = 50, x = 10, y = 290)
 
 #Entrada de Texto
 xa = Label(ventana, text = "X^2 + ")
-xa.place(bordermode = OUTSIDE, height = 30, width = 50, x =70,y=290)
 xb = Label(ventana, text = "X + ")
+xc = Label(ventana, text = " = 0 ")
+
+xa.place(bordermode = OUTSIDE, height = 30, width = 50, x = 70, y = 290)
 xb.place(bordermode = OUTSIDE, height = 30, width = 50, x = 180, y = 290)
-xc = Label(ventana, text = "= 0 ")
-xc.place(bordermode = OUTSIDE, height = 30, width = 50, x=280, y = 290)
+xc.place(bordermode = OUTSIDE, height = 30, width = 50, x = 280, y = 290)
 
 #Boton de graficar
 
